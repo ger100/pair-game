@@ -7,33 +7,14 @@
 */
 
 
-const cards1 = ['fa-bell','fa-apple-alt','fa-address-card','fa-archway','fa-atlas'];
-const cards2 = ['fa-bell','fa-apple-alt','fa-address-card','fa-archway','fa-atlas'];
+const cards1 = ['fa-bell', 'fa-apple-alt', 'fa-address-card', 'fa-archway', 'fa-atlas'];
+const cards2 = ['fa-bell', 'fa-apple-alt', 'fa-address-card', 'fa-archway', 'fa-atlas'];
 
 
-
-
-/* function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-  return array;
-}
- */
-
-
- // kartyak megkeverese
+// kartyak megkeverese
 function shuffle(array) {
     array.sort(() => Math.random() - 0.5);
-  }
+}
 shuffle(cards1);
 shuffle(cards2);
 
@@ -44,66 +25,121 @@ const cards = cards1.concat(cards2);
 
 
 //elso sor kartya kiirasa
-function oszt(pakli) {
-    document.querySelector('.board').innerHTML +="<div class=\"set\">";
+function oszt1(pakli) {
+    document.querySelector('.board').innerHTML += "<div class=\"set\">";
     pakli.forEach(element => {
-        document.querySelector('.set').innerHTML += "<div class=\"card\"><i class=\"fas " +element+ "\"></i></div>";
+        document.querySelector('.set').innerHTML += "<div class=\"flip-card\"><div class=\"flip-card-inner\"><div class=\"flip-card-front\"><div class=\"card invisible\"><i class=\"fas " + element + "\"></i></div></div><div class=\"flip-card-back\"><div class=\"card\"><i class=\"fas " + element + "\"></i></div></div></div></div>";
     });
-    document.querySelector('.board').innerHTML +="</div>";
+    document.querySelector('.board').innerHTML += "</div>";
 
 }
 //masodik sor kartya kiirasa
 function oszt2(pakli) {
-    document.querySelector('.board').innerHTML +="<div class=\"set2\">";
+    document.querySelector('.board').innerHTML += "<div class=\"set2\">";
     pakli.forEach(element => {
-        document.querySelector('.set2').innerHTML += "<div class=\"card\"><i class=\"fas " +element+ "\"></i></div>";
+        document.querySelector('.set2').innerHTML += "<div class=\"flip-card\"><div class=\"flip-card-inner\"><div class=\"flip-card-front\"><div class=\"card invisible\"><i class=\"fas " + element + "\"></i></div></div><div class=\"flip-card-back\"><div class=\"card\"><i class=\"fas " + element + "\"></i></div></div></div></div>";
     });
-    document.querySelector('.board').innerHTML +="</div>";
+    document.querySelector('.board').innerHTML += "</div>";
 
 }
-oszt(cards1);
+oszt1(cards1);
 oszt2(cards2);
+//startTimer();
 
 
-
-// jatek
-
-/* // ha ket ugyanolyan 
-  function myFunction(e){
-  }
- // figyeli a klikkelest 
-const buttons = document.querySelectorAll('.card')
-buttons.forEach(button => {
-    button.addEventListener('click', () => { 
-        myFunction()
-    })
-  }) */
-
-
+// ha ket ugyanolyan kartya van a .card-on belul kattintva
 let arr = [];
-window.onclick = function(e) {
-    let x = e.srcElement.className;
-    arr.push(x); 
-    console.log(arr);
+function hasDuplicates(arr) {
+    return new Set(arr).size !== arr.length;
+}
 
-    
-    
-    function hasDuplicates(arr)
-    {
-    return new Set(arr).size !== arr.length; 
+function ifDuplicated() {
+    if (hasDuplicates(arr)) {
+        console.log("Pair found");
+
+        clearInterval(counterId);
+        document.querySelector('.time').innerHTML += " - Pair found - pages refreshin 5 seconds";
+        reload();
+        
+
+    } else {
+        console.log(last(arr));
+        
+        if (last(arr) !== arr[0]) {
+            console.log('NEM EGYEZIK');
+
+            document.querySelectorAll('.flip-card-inner').forEach(item => {
+                item.addEventListener( 'mouseleave', function() {
+                item.classList.remove('flip-card-inner2');
+            })
+        }) 
+
+
+
+
+        }   
     }
- 
-
- 
-if (hasDuplicates(arr)) {
-    console.log("Duplicate elements found.");
 }
-else {
+
+// last n elementf of array
+var last = function last(array, n) {
+    if (array == null) return void 0;
+    if (n == null) return array[array.length - 1];
+    return array.slice(Math.max(array.length - n, 0));
+  };
+console.log(last(arr));
+
+
+// az ikonra klikkelest figyeli
+window.onclick = function (e) {
+    let x = e.srcElement.className;
+    if (x.startsWith("fas")) {
+        arr.push(x);
+    }
+    console.log(arr);
+    hasDuplicates(arr);
+    ifDuplicated();
+}
+
+
+// oldalt ujratolti
+function reload() {
+    setTimeout(function () {
+        location.reload();
+    }, 5000);
+}
+
+
+// idomero
+let min = 0;
+let second = 00;
+let noZero = 0;
+let counterId = setInterval(function () { countUp(); }, 1000);
+
+function countUp() {
+    second++;
+    if (second == 59) {
+        second = 00;
+        min = min + 1;
+    }
+    if (second == 10) {
+        noZero = '';
+    } else
+        if (second == 00) {
+            noZero = 0;
+        }
+    document.querySelector('.time').innerHTML = min + ':' + noZero + second;
+}
+
+
+// megfordul a a lap klikkelesre
+    document.querySelectorAll('.flip-card-inner').forEach(item => {
+        item.addEventListener('click', event => {
+            item.classList.toggle('flip-card-inner2');
+            item.classList.toggle('i');
+        })
+      })
     
-}
 
 
-
-
-
-} 
+       
